@@ -159,4 +159,4 @@ rejectionSampler :: (Floating a, Ord a, Integral b)
                  -> Sampler a b     -- ^ The computed rejection Boltzmann sampler.
                 
 rejectionSampler m h eps = boltzmannSampler m h rho
-    where rho = domSingH m h eps 
+    where rho = domSingH m h eps

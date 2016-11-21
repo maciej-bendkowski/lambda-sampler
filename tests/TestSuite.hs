@@ -26,6 +26,9 @@ tests =
          , testProperty "5-shallow terms have indices at most 5" nat_prop_idx5
          , testProperty "15-shallow terms have indices at most 15" nat_prop_idx15
          , testProperty "30-shallow terms have indices at most 30" nat_prop_idx30
+         
+         , testProperty "Plain terms are of correct size" plain_nat_prop_sizeOK
+         , testProperty "isClosed filter returns closed lambda terms" plain_nat_prop_filter_closed
         ],
         
         testGroup "Binary size notion"
@@ -41,5 +44,8 @@ tests =
          , testProperty "5-shallow terms have indices at most 5" bin_prop_idx5
          , testProperty "15-shallow terms have indices at most 15" bin_prop_idx15
          , testProperty "30-shallow terms have indices at most 30" bin_prop_idx30
+         
+         , testProperty "Plain terms are of correct size" plain_bin_prop_sizeOK
+         , testProperty "isClosed filter returns closed lambda terms" plain_bin_prop_filter_closed
         ]
     ]

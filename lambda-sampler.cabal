@@ -16,6 +16,7 @@ library
                      , Data.Lambda.Model
                      , Data.Lambda.Random.Oracle
                      , Data.Lambda.Random.System
+                     , Data.Lambda.Random.PlainSystem
                      , Data.Lambda.Random
   build-depends:       base >= 4.7 && < 5
                      , MonadRandom >= 0.4
