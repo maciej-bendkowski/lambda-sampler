@@ -4,7 +4,7 @@ Lambda sampler
 *Lambda sampler* is a library for random generation of lambda terms in the de
 Bruijn notation (see, e.g. [1]), utilizing the powerful framework of Boltzmann samplers [2].
 
-#### Included features
+#### Features
 1. Fast uniform random sampling of plain lambda terms.
 2. Fast uniform random sampling of closed lambda terms with bounded variable
    distance (closed h-shallow lambda terms).

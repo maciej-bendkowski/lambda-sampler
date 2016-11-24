@@ -44,7 +44,8 @@ randomP = lift $ getRandomR (0,1)
 
 pass :: S.System a -> S.System a
 pass [e] = [e]
-pass (e:es) = es
+pass (_:es) = es
+pass _ = error "Can't pass an empty system!"
 
 randomClosedLambda :: (Random a, Num a, Ord a, Integral b, RandomGen g)
                    => S.Sampler a b
@@ -53,6 +54,9 @@ randomClosedLambda :: (Random a, Num a, Ord a, Integral b, RandomGen g)
 
 randomClosedLambda spec = randomClosedLambda' m sys
     where (m,sys) = (S.model spec, S.system spec)
+
+randomClosedLambda' :: (Random a, Num a, Ord a, Integral b, RandomGen g) 
+                    => Model b -> [S.Expr a] -> b -> MaybeT (Rand g) (Lambda, b)
 
 randomClosedLambda' m sys @ (e:_) ub = do
     guard (ub > 0)
@@ -70,6 +74,8 @@ randomClosedLambda' m sys @ (e:_) ub = do
         (x,s) <- randomIndex m ub p (S.idx e)
         return (Var x, s)
 
+randomClosedLambda' _ _ _ = error "I wasn't expecting the Spanish Inquisition."
+
 randomIndex :: (Random a, Num a, Ord a, Integral b, RandomGen g)
             => Model b
             -> b
@@ -79,6 +85,9 @@ randomIndex :: (Random a, Num a, Ord a, Integral b, RandomGen g)
 
 randomIndex m ub = randomIndex' m (ub - w) Z w
     where w = zeroW m
+
+randomIndex' :: (Random a, Num a, Ord a, Integral b, RandomGen g)
+             => Model b -> b -> Index -> b -> a -> [a] -> MaybeT (Rand g) (Index, b)
 
 randomIndex' m ub idx w p ps = do
     guard (ub > 0)
@@ -90,8 +99,14 @@ randomIndex' m ub idx w p ps = do
                       randomIndex' m (ub - w') (S idx) (w + w') p ps'
       _ -> return (idx, w)
 
+randomLambda :: (Random a, Num a, Ord a, Integral b, RandomGen g)
+             => P.PlainSampler a b -> b -> MaybeT (Rand g) (Lambda, b)
+
 randomLambda spec = randomLambda' m sys
     where (m,sys) = (P.model spec, P.system spec)
+
+randomLambda' :: (Random a, Num a, Ord a, Integral b, RandomGen g)
+              =>  Model b -> P.PlainSystem a -> b -> MaybeT (Rand g) (Lambda, b)
 
 randomLambda' m sys ub = do
     guard (ub > 0)
@@ -108,6 +123,9 @@ randomLambda' m sys ub = do
     else do
         (x,s) <- randomPlainIndex m ub (P.zero sys)
         return (Var x, s)
+
+randomPlainIndex :: (Random a, Num a, Ord a, Integral b, RandomGen g)
+                 =>  Model b -> b -> a -> MaybeT (Rand g) (Index, b)
 
 randomPlainIndex m ub zeroP = do
     guard (ub > 0)

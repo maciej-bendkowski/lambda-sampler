@@ -17,8 +17,11 @@ module Data.Lambda.Random.Oracle
     , rootsH
     ) where
 
-import Data.Lambda
+import Data.Lambda ()
 import Data.Lambda.Model
+
+weights' :: (Integral t, Num a, Num b, Num c, Num d)
+         => Model t -> (a, b, c, d)
 
 weights' m = (a',b',c',d')
     where a' = fromIntegral a
@@ -98,9 +101,13 @@ rootsH :: (Floating a, Integral b)
 
 rootsH m h = newton (domFuncH m h) (domFuncHDeriv m h)
 
+find :: (Num a, Ord a) => [a] -> a -> a
+
 find (x:y:xs) eps
   | abs (x-y) < eps = y
   | otherwise = find (y:xs) eps
+
+find _ _ = error "I wasn't expecting the Spanish Inquisition."
 
 -- | Finds the dominating singularity of the plain lambda term ogf.
 domSing :: (Floating a, Ord a, Integral b) 

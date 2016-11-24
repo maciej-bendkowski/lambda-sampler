@@ -1,13 +1,24 @@
 name:                lambda-sampler
-version:             0.1.0.0
-synopsis:            Boltzmann sampler utilities for lambda calculus. 
+version:             1.0 
+synopsis:            Boltzmann sampler utilities for lambda calculus.
+description:         Uniform generation of plain and closed lambda terms
+                     in the de Bruijn notation.
+
 license:             BSD3
 license-file:        LICENSE
+
 author:              Maciej Bendkowski 
-maintainer:          maciej.bendkowski@tcs.uj.edu.pl
-copyright:           2016 Maciej Bendkowski
-category:            Math
+maintainer:          Maciej Bendkowski <maciej.bendkowski@tcs.uj.edu.pl>
+copyright:           (c) 2016 Maciej Bendkowski
+
+stability:           experimental
+
+homepage:            https://github.com/maciej-bendkowski/lambda-sampler
+bug-reports:         https://github.com/maciej-bendkowski/lambda-sampler/issues
+
+category:            Data
 build-type:          Simple
+
 -- extra-source-files:
 cabal-version:       >=1.10
 
@@ -22,6 +33,8 @@ library
                      , MonadRandom >= 0.4
                      , mtl >= 2.2
                      , transformers >= 0.4
+  
+  ghc-options:         -Wall -fno-warn-type-defaults
   default-language:    Haskell2010
 
 test-suite lambda-sampler-tests

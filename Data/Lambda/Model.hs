@@ -36,6 +36,8 @@ valid m = a + d >= 1
        && gcd' [b, c, a+d] >= 1
     where (a,b,c,d) = weights m
 
+gcd' :: Integral a => [a] -> a
+
 gcd' [] = 1
 gcd' [x] = x
 gcd' (x:xs) = gcd x (gcd' xs)

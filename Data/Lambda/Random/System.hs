@@ -22,7 +22,7 @@ module Data.Lambda.Random.System
 
 import Prelude hiding (abs)
 
-import Data.Lambda
+import Data.Lambda ()
 import Data.Lambda.Model
 import Data.Lambda.Random.Oracle
 
@@ -55,22 +55,26 @@ evalS :: (Floating a, Integral b)
       => Model b -> a -> a -> a
 
 evalS m p z = (1-sqrt (1-4*p*z^^(c+d)))/(2*z^^d)
-    where (a,b,c,d) = weights m
+    where (_,_,c,d) = weights m
 
 take' :: (Integral a) 
       => a -> [b] -> [b]
 
 take' 0 _ = []
 take' n (x:xs) = x : take' (n-1) xs
+take' _ [] = error "Empty list!"
 
 computeIdx :: (Floating a, Integral b) 
            => Model b -> b -> a -> a -> [a]
 
-computeIdx m 0 _ _ = []
+computeIdx _ 0 _ _ = []
 computeIdx m h z w = take' h $ map (/ w) idxSeq
     where idxSeq = z^^a : next idxSeq 
+          
           next (x:xs) = x * z^^b : next xs
-          (a,b,c,d) = weights m
+          next _ = error "Finite list!"
+          
+          (a,b,_,_) = weights m
 
 -- | Computes the Boltzmann model for closed h-shallow 
 --   lambda terms in the given parameter.
@@ -90,8 +94,8 @@ computeSys' :: (Floating a, Integral b)
 computeSys' m h i z
   | i == 0 = let
     w = evalS m w' z
-    (a,b,c,d) = weights m
-    (w', c1) = computeSys' m h 1 z
+    (_,_,c,d) = weights m
+    (w',c1) = computeSys' m h 1 z
     in (w, Expr { abs = (w' * z^^c) / w
                 , app = w * z^^d
                 , idx = computeIdx m 0 z w
@@ -99,7 +103,7 @@ computeSys' m h i z
 
   | i == h = let
     w = evalH m h z
-    (a,b,c,d) = weights m
+    (_,_,c,d) = weights m
     in (w, [Expr { abs = z^^c
                  , app = w * z^^d
                  , idx = computeIdx m h z w
@@ -107,8 +111,8 @@ computeSys' m h i z
 
   | otherwise = let
     w = evalI m i w' z
-    (a,b,c,d) = weights m
-    (w', cp) = computeSys' m h (i+1) z
+    (_,_,c,d) = weights m
+    (w',cp) = computeSys' m h (i+1) z
      in (w, Expr { abs = (w' * z^^c) / w
                  , app = w * z^^d
                  , idx = computeIdx m i z w
@@ -117,7 +121,7 @@ computeSys' m h i z
 toProbIdx :: (Num a) 
           => a -> [a] -> [a]
 
-toProbIdx w [] = []
+toProbIdx _ [] = []
 toProbIdx w (x:xs) = w' : toProbIdx w' xs
     where w' = w + x
 

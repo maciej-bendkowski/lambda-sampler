@@ -21,7 +21,7 @@ module Data.Lambda.Random.PlainSystem
 
 import Prelude hiding (abs)
 
-import Data.Lambda
+import Data.Lambda ()
 import Data.Lambda.Model
 import Data.Lambda.Random.Oracle
 
@@ -38,7 +38,7 @@ eval m z = -1/(2*z^^d) * (z^^c - 1 + sqrt ((4*z^^(a+d))/(z^^b - 1) + (z^^c - 1)^
 
 evalD :: (Floating a, Integral b) => Model b -> a -> a
 evalD m z = (z^^a)/(1-z^^b)
-    where (a,b,c,d) = weights m
+    where (a,b,_,_) = weights m
 
 -- | Computes the Boltzmann model for plain 
 --   lambda terms in the given parameter.
@@ -51,7 +51,7 @@ boltzmannSystem m z = PlainSystem { abs = z^^c
                                   , app = z^^c + z^^d * eval m z
                                   , zero = z^^a / evalD m z
                                   }
-    where (a,b,c,d) = weights m
+    where (a,_,c,d) = weights m
 
 -- | Boltzmann sampler specification consisting of a Boltzmann system
 --   with a corresponding and consistent size notion model.
