@@ -1,14 +1,18 @@
 {-|
- - Module      : Data.Lambda.Model 
- - Description : Basic lambda term size model notions.
- - Copyright   : (c) Maciej Bendkowski, 2016
- - 
- - License     : BSD3
- - Maintainer  : maciej.bendkowski@tcs.uj.edu.pl
- - Stability   : experimental
+ Module      : Data.Lambda.Model 
+ Description : Basic lambda term size model notions.
+ Copyright   : (c) Maciej Bendkowski, 2016
+  
+ License     : BSD3
+ Maintainer  : maciej.bendkowski@tcs.uj.edu.pl
+ Stability   : experimental
+ 
+ Size notion framework of Gittenberger and Gołębiewski for lambda terms 
+ in the de Bruijn notation. A size definition constitutes the weights
+ for lambda abstraction, term application, successor and zero.
  -}
 module Data.Lambda.Model
-    ( -- * Size notions.
+    ( -- * Size notions
       Model(..)
     , natural, binary
     , valid
@@ -18,17 +22,17 @@ module Data.Lambda.Model
     ) where
 
 -- | Lambda term size model.
-data Model a = Model { zeroW :: a -- ^ Size of zero (a)
-                     , succW :: a -- ^ Size of successor (b)
-                     , absW  :: a -- ^ Size of the abstraction (c)
-                     , appW  :: a -- ^ Size of the application (d)
+data Model a = Model { zeroW :: a -- ^ Size of zero
+                     , succW :: a -- ^ Size of successor
+                     , absW  :: a -- ^ Size of the abstraction
+                     , appW  :: a -- ^ Size of the application
                      }
 
 -- | Checks whether the given size model is valid
 --   in the framework of Gittenberger and Gołębiewski.
 valid :: Integral a 
-      => Model a    -- * Size notion
-      -> Bool       -- * Whether the size model is valid.
+      => Model a    -- ^ Size notion
+      -> Bool       -- ^ Whether the size model is valid.
 
 valid m = a + d >= 1
        && b >= 1
@@ -42,7 +46,7 @@ gcd' [] = 1
 gcd' [x] = x
 gcd' (x:xs) = gcd x (gcd' xs)
 
--- | The `natural' size notion.
+-- | The natural size notion.
 natural :: Integral a => Model a
 natural = Model { zeroW = 1
                 , succW = 1
@@ -50,7 +54,7 @@ natural = Model { zeroW = 1
                 , appW  = 1 
                 }
 
--- | The `binary' size notion.
+-- | The binary size notion.
 binary :: Integral a => Model a
 binary = Model { zeroW = 2
                , succW = 1

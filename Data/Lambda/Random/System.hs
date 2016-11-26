@@ -1,20 +1,22 @@
 {-|
- - Module      : Data.Lambda.Random.System 
- - Description : Basic notions regarding combinatorial systems
- -               defining closed h-shallow lambda terms.
- - Copyright   : (c) Maciej Bendkowski, 2016
- - 
- - License     : BSD3
- - Maintainer  : maciej.bendkowski@tcs.uj.edu.pl
- - Stability   : experimental
- -}
+ Module      : Data.Lambda.Random.System 
+ Description : Basic notions regarding combinatorial systems
+               defining closed h-shallow lambda terms.
+ Copyright   : (c) Maciej Bendkowski, 2016
+ 
+ License     : BSD3
+ Maintainer  : maciej.bendkowski@tcs.uj.edu.pl
+ Stability   : experimental
+ 
+ Combinatorial system defining closed h-shallow lambda terms in the de Bruijn notation.
+-}
 module Data.Lambda.Random.System
-    ( -- * Boltzmann system utilities.
+    ( -- * System
       Expr(..)
     , System
     , boltzmannSystem
 
-     -- * Boltzmann sampler utilities.
+     -- * Boltzmann samplers
     , Sampler(..)
     , boltzmannSampler
     , rejectionSampler
@@ -77,7 +79,7 @@ computeIdx m h z w = take' h $ map (/ w) idxSeq
           (a,b,_,_) = weights m
 
 -- | Computes the Boltzmann model for closed h-shallow 
---   lambda terms in the given parameter.
+--   lambda terms evaluated in the given parameter.
 boltzmannSystem :: (Floating a, Integral b)
                 => Model b      -- ^ Size notion. 
                 -> b            -- ^ Shallowness.
@@ -136,13 +138,13 @@ toProb expr = expr { app = x
           x = abs expr + app'
 
 -- | Boltzmann sampler specification consisting of a Boltzmann system
---   with a corresponding and consistent size notion model.
+--   with a corresponding size notion model.
 data Sampler a b = Sampler { system :: System a     -- ^ Boltzmann system.
                            , model :: Model b       -- ^ Size notion.
                            }
 
 -- | Computes the Boltzmann sampler specification 
---   for closed h-shallow lambda terms in the given parameter.
+--   for closed h-shallow lambda terms evaluated in the given parameter.
 boltzmannSampler :: (Floating a, Integral b)
                  => Model b         -- ^ Size notion. 
                  -> b               -- ^ Shallowness.

@@ -41,6 +41,7 @@ test-suite lambda-sampler-tests
   type:                exitcode-stdio-1.0
   hs-source-dirs:      tests
   main-is:             TestSuite.hs
+  other-modules:       Utils
   build-depends:       base >= 4.7 && < 5
                      , QuickCheck >= 2.9
                      , test-framework >= 0.8

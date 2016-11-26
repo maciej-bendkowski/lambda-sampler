@@ -1,26 +1,34 @@
 {-|
- - Module      : Data.Lambda.Random 
- - Description : Boltzmann samplers for random lambda terms.
- - Copyright   : (c) Maciej Bendkowski, 2016
- -
- - License     : BSD3
- - Maintainer  : maciej.bendkowski@tcs.uj.edu.pl
- - Stability   : experimental
- -}
+ Module      : Data.Lambda.Random 
+ Description : Boltzmann samplers for random lambda terms.
+ Copyright   : (c) Maciej Bendkowski, 2016
+
+ License     : BSD3
+ Maintainer  : maciej.bendkowski@tcs.uj.edu.pl
+ Stability   : experimental
+
+ Boltzmann samplers for plain and closed h-shallow lambda terms (closed lambda terms
+ in which each de Bruijn index is bounded by h). 
+     
+ The exact outcome size of a Boltzmann sampler is a random variable. Its moments, in 
+ particular expectation, can be calibrated by adjusting the formal
+ evaluation parameter (see "Data.Lambda.Random.System" or "Data.Lambda.Random.PlainSystem").
+ Boltzmann samplers guarantee that terms of equal size have equal probability of being chosen. 
+-}
 module Data.Lambda.Random
-    ( -- * Boltzmann samplers for closed h-shallow lambda terms.
+    ( -- * Closed h-shallow lambda terms
       closedLambda
     , closedLambdaIO
 
-      -- * Filter samplers for closed h-shallow lambda terms.
+      -- * Filter samplers for closed h-shallow lambda terms
     , filterClosed
     , filterClosedIO
       
-      -- * Boltzmann samplers for plain lambda terms.
+      -- * Plain lambda terms
     , plainLambda
     , plainLambdaIO
       
-      -- * Filter samplers for plain lambda terms.
+      -- * Filter samplers for plain lambda terms
     , filterPlain
     , filterPlainIO
     ) where
@@ -137,13 +145,10 @@ randomPlainIndex m ub zeroP = do
         return (S idx, s + w)
     
 -- | Samples a random closed h-shallow lambda term in the given size range.
---   The exact outcome size is a random variable itself, however any
---   two lambda terms of the same size have the same probability
---   due to the imposed Boltzmann model.
 closedLambda :: (Random a, Num a, Ord a, Integral b, RandomGen g)
              => S.Sampler a b     -- ^ Boltzmann sampler to use.
-             -> b                 -- ^ Outcome lower bound.
-             -> b                 -- ^ Outcome upper bound.
+             -> b                 -- ^ Outcome size lower bound.
+             -> b                 -- ^ Outcome size upper bound.
              -> Rand g Lambda     -- ^ The monadic result. 
 
 closedLambda spec lb ub = do
@@ -154,25 +159,21 @@ closedLambda spec lb ub = do
                                 else closedLambda spec lb ub
 
 -- | Samples a random closed h-shallow lambda term in the given size range
---   using the IO monad as the source of its random generator.
---   See closedLambda for more details.
+--   using the IO monad. See `closedLambda' for more details.
 closedLambdaIO :: (Random a, Num a, Ord a, Integral b) 
                => S.Sampler a b     -- ^ Boltzmann sampler to use.
-               -> b                 -- ^ Outcome lower bound.
-               -> b                 -- ^ Outcome upper bound.
+               -> b                 -- ^ Outcome size lower bound.
+               -> b                 -- ^ Outcome size upper bound.
                -> IO Lambda         -- ^ The monadic result. 
 
 closedLambdaIO spec lb ub = evalRandIO rand
     where rand = closedLambda spec lb ub
 
 -- | Samples a random plain lambda term in the given size range.
---   The exact outcome size is a random variable itself, however any
---   two lambda terms of the same size have the same probability
---   due to the imposed Boltzmann model.
 plainLambda :: (Random a, Num a, Ord a, Integral b, RandomGen g)
             => P.PlainSampler a b   -- ^ Boltzmann sampler to use.
-            -> b                    -- ^ Outcome lower bound.
-            -> b                    -- ^ Outcome upper bound.
+            -> b                    -- ^ Outcome size lower bound.
+            -> b                    -- ^ Outcome size upper bound.
             -> Rand g Lambda        -- ^ The monadic result.
 
 plainLambda spec lb ub = do
@@ -183,25 +184,24 @@ plainLambda spec lb ub = do
                                 else plainLambda spec lb ub
 
 -- | Samples a random plain lambda term in the given size range
---   using the IO monad as the source of its random generator.
---   See plainLambda for more details.
+--   using the IO monad. See `plainLambda' for more details.
 plainLambdaIO :: (Random a, Num a, Ord a, Integral b) 
               => P.PlainSampler a b     -- ^ Boltzmann sampler to use.
-              -> b                      -- ^ Outcome lower bound.
-              -> b                      -- ^ Outcome upper bound.
+              -> b                      -- ^ Outcome size lower bound.
+              -> b                      -- ^ Outcome size upper bound.
               -> IO Lambda              -- ^ The monadic result. 
 
 plainLambdaIO spec lb ub = evalRandIO rand
     where rand = plainLambda spec lb ub
 
 -- | Samples a random closed h-shallow lambda term in the given
---   size range, which satisfies the given predicate.
---   See also closedLambda.
+--   size range. In addition, the term has to satisfy the given predicate.
+--   See also `closedLambda'.
 filterClosed :: (Random a, Num a, Ord a, Integral b, RandomGen g)
              => (Lambda -> Bool)  -- ^ Filter function to use.
              -> S.Sampler a b     -- ^ Boltzmann sampler to use.
-             -> b                 -- ^ Outcome lower bound.
-             -> b                 -- ^ Outcome upper bound.
+             -> b                 -- ^ Outcome size lower bound.
+             -> b                 -- ^ Outcome size upper bound.
              -> Rand g Lambda     -- ^ The monadic result. 
        
 filterClosed p spec lb ub = do
@@ -210,27 +210,27 @@ filterClosed p spec lb ub = do
            else filterClosed p spec lb ub
 
 -- | Samples a random closed h-shallow lambda term in the given
---   size range, which satisfies the given predicate. The IO monad 
---   is used as the source of its random generator.
---   See also filter.
+--   size range. In addition, the term has to satisfy the given predicate.
+--   The IO monad is used as the source of random numbers.
+--   See also `filterClosed'.
 filterClosedIO :: (Random a, Num a, Ord a, Integral b)
                => (Lambda -> Bool)  -- ^ Filter function to use.
                -> S.Sampler a b     -- ^ Boltzmann sampler to use.
-               -> b                 -- ^ Outcome lower bound.
-               -> b                 -- ^ Outcome upper bound.
+               -> b                 -- ^ Outcome size lower bound.
+               -> b                 -- ^ Outcome size upper bound.
                -> IO Lambda         -- ^ The monadic result. 
 
 filterClosedIO p spec lb ub = evalRandIO rand
     where rand = filterClosed p spec lb ub
 
 -- | Samples a random plain lambda term in the given
---   size range, which satisfies the given predicate.
---   See also plainLambda.
+--   size range. In addition, the term has to satisfy the given predicate.
+--   See also `plainLambda'.
 filterPlain :: (Random a, Num a, Ord a, Integral b, RandomGen g)
             => (Lambda -> Bool)       -- ^ Filter function to use.
             -> P.PlainSampler a b     -- ^ Boltzmann sampler to use.
-            -> b                      -- ^ Outcome lower bound.
-            -> b                      -- ^ Outcome upper bound.
+            -> b                      -- ^ Outcome size lower bound.
+            -> b                      -- ^ Outcome size upper bound.
             -> Rand g Lambda          -- ^ The monadic result. 
        
 filterPlain p spec lb ub = do
@@ -239,14 +239,14 @@ filterPlain p spec lb ub = do
            else filterPlain p spec lb ub
 
 -- | Samples a random plain lambda term in the given
---   size range, which satisfies the given predicate. The IO monad 
---   is used as the source of its random generator.
---   See also filterPlain.
+--   size range. In addition, the term has to satisfy the given predicate.
+--   The IO monad is used as the source of random numbers.
+--   See also `filterPlain'.
 filterPlainIO :: (Random a, Num a, Ord a, Integral b)
               => (Lambda -> Bool)       -- ^ Filter function to use.
               -> P.PlainSampler a b     -- ^ Boltzmann sampler to use.
-              -> b                      -- ^ Outcome lower bound.
-              -> b                      -- ^ Outcome upper bound.
+              -> b                      -- ^ Outcome size lower bound.
+              -> b                      -- ^ Outcome size upper bound.
               -> IO Lambda              -- ^ The monadic result. 
 
 filterPlainIO p spec lb ub = evalRandIO rand

@@ -1,19 +1,21 @@
 {-|
- - Module      : Data.Lambda.Random.PlainSystem 
- - Description : Basic notions regarding combinatorial
- -               specifications defining plain lambda terms.
- - Copyright   : (c) Maciej Bendkowski, 2016
- - 
- - License     : BSD3
- - Maintainer  : maciej.bendkowski@tcs.uj.edu.pl
- - Stability   : experimental
+ Module      : Data.Lambda.Random.PlainSystem 
+ Description : Basic notions regarding combinatorial
+               specifications defining plain lambda terms.
+ Copyright   : (c) Maciej Bendkowski, 2016
+ 
+ License     : BSD3
+ Maintainer  : maciej.bendkowski@tcs.uj.edu.pl
+ Stability   : experimental
+ 
+ Combinatorial specification defining plain lambda terms in the de Bruijn notation.
  -}
 module Data.Lambda.Random.PlainSystem
-    ( -- * Boltzmann system utilities.
+    ( -- * System
       PlainSystem(..)
     , boltzmannSystem
 
-     -- * Boltzmann sampler utilities.
+     -- * Boltzmann samplers
     , PlainSampler(..)
     , boltzmannSampler
     , rejectionSampler
@@ -41,7 +43,7 @@ evalD m z = (z^^a)/(1-z^^b)
     where (a,b,_,_) = weights m
 
 -- | Computes the Boltzmann model for plain 
---   lambda terms in the given parameter.
+--   lambda terms evaluated in the given parameter.
 boltzmannSystem :: (Floating a, Integral b) 
                 => Model b           -- ^ Size notion. 
                 -> a                 -- ^ Formal z parameter.
@@ -54,13 +56,13 @@ boltzmannSystem m z = PlainSystem { abs = z^^c
     where (a,_,c,d) = weights m
 
 -- | Boltzmann sampler specification consisting of a Boltzmann system
---   with a corresponding and consistent size notion model.
+--   with a corresponding size notion model.
 data PlainSampler a b = PlainSampler { system :: PlainSystem a     -- ^ Boltzmann system.
                                      , model :: Model b            -- ^ Size notion.
                                      }
 
 -- | Computes the Boltzmann sampler specification 
---   for plain lambda terms in the given parameter.
+--   for plain lambda terms evaluated in the given parameter.
 boltzmannSampler :: (Floating a, Integral b)
                  => Model b              -- ^ Size notion. 
                  -> a                    -- ^ Formal z parameter.
