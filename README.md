@@ -12,6 +12,11 @@ Bruijn notation (see, e.g. [1]), utilizing the powerful framework of Boltzmann s
    and Gołębiewski [3].
 4. Effective predicate-based rejection filtering.
 
+#### Install
+```
+cabal install lambda-sampler
+```
+
 #### References
 1. [M. Bendkowski, K. Grygiel, P.Lescanne, M. Zaionc: Combinatorics of lambda-terms: a natural approach](http://arxiv.org/pdf/1609.07593v1.pdf)
 2. [P. Duchon, P. Flajolet, G. Louchard. G. Schaeffer: Boltzmann Samplers for the random generation of combinatorial structures](http://algo.inria.fr/flajolet/Publications/DuFlLoSc04.pdf)
