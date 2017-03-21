@@ -134,4 +134,5 @@ domSingH :: (Floating a, Ord a, Integral b)
          -> a             -- ^ Approximation error.
          -> a             -- ^ Dominating singularity.
 
-domSingH m h eps = find (rootsH m h 0.5) eps - eps
+domSingH m h eps = find (rootsH m h sing) eps - eps
+    where sing = domSing m eps
