@@ -1,13 +1,13 @@
 {-|
- Module      : Data.Lambda.Model 
+ Module      : Data.Lambda.Model
  Description : Basic lambda term size model notions.
- Copyright   : (c) Maciej Bendkowski, 2016
-  
+ Copyright   : (c) Maciej Bendkowski, 2017
+
  License     : BSD3
  Maintainer  : maciej.bendkowski@tcs.uj.edu.pl
  Stability   : experimental
- 
- Size notion framework of Gittenberger and Gołębiewski for lambda terms 
+
+ Size notion framework of Gittenberger and Gołębiewski for lambda terms
  in the de Bruijn notation. A size definition constitutes the weights
  for lambda abstraction, term application, successor and zero.
  -}
@@ -30,7 +30,7 @@ data Model a = Model { zeroW :: a -- ^ Size of zero
 
 -- | Checks whether the given size model is valid
 --   in the framework of Gittenberger and Gołębiewski.
-valid :: Integral a 
+valid :: Integral a
       => Model a    -- ^ Size notion
       -> Bool       -- ^ Whether the size model is valid.
 
@@ -51,7 +51,7 @@ natural :: Integral a => Model a
 natural = Model { zeroW = 1
                 , succW = 1
                 , absW  = 1
-                , appW  = 1 
+                , appW  = 1
                 }
 
 -- | The binary size notion.
@@ -59,7 +59,7 @@ binary :: Integral a => Model a
 binary = Model { zeroW = 2
                , succW = 1
                , absW  = 2
-               , appW  = 2 
+               , appW  = 2
                }
 
 -- | Given a size notion, returns a tuple (a,b,c,d) where a denotes the size

@@ -1,23 +1,24 @@
 {-|
- Module      : Data.Lambda.Random.Oracle 
+ Module      : Data.Lambda.Random.Oracle
  Description : Basic Boltzmann oracle notions.
- Copyright   : (c) Maciej Bendkowski, 2016
+ Copyright   : (c) Maciej Bendkowski, 2017
 
  License     : BSD3
  Maintainer  : maciej.bendkowski@tcs.uj.edu.pl
  Stability   : experimental
 
  Boltzmann oracles finding numerical approximations of the generating function
- singularities, dictating the asymptotic growth rate of (closed h-shallow) lambda terms. 
-     
- The approximations are guaranteed to converge to the singularities quadratically
- as the Newton-Raphson root finding algorithm is used.
+singularities, dictating the asymptotic growth rate of (closed h-shallow)
+lambda terms.
+
+ The approximations are guaranteed to converge to the singularities
+quadratically as the Newton-Raphson root finding algorithm is used.
  -}
 module Data.Lambda.Random.Oracle
     ( -- * Plain lambda terms
       domSing
     , roots
-    
+
       -- * Closed h-shallow lambda terms
     , domSingH
     , rootsH
@@ -39,8 +40,8 @@ weights' m = (a',b',c',d')
 -- | Function f whose real root constitutes the
 --   singularity for plain lambda terms in the
 --   given size model.
-domFunc :: (Floating a, Integral b) 
-        => Model b        -- ^ Size notion. 
+domFunc :: (Floating a, Integral b)
+        => Model b        -- ^ Size notion.
         -> a              -- ^ Formal z parameter.
         -> a              -- ^ The value f(z).
 
@@ -59,17 +60,17 @@ domFuncDeriv m z = -4*(a'+d')*z^^(a+d-1) -2*c'*z^^(c-1)*(1-z^^b)*(1-z^^c)
 -- | Function f_h whose real root constitutes the
 --   singularity for closed h-shallow lambda terms
 --   in the given size model.
-domFuncH :: (Floating a, Integral b) 
-         => Model b      -- ^ Size notion. 
+domFuncH :: (Floating a, Integral b)
+         => Model b      -- ^ Size notion.
          -> b            -- ^ Shallowness.
-         -> a            -- ^ Formal z parameter. 
+         -> a            -- ^ Formal z parameter.
          -> a            -- ^ The value f_h(z).
 
 domFuncH m h z = (z^^c -1)^^2 - ((4*z^^(a+d))*(z^^(b*h)-1))/(z^^b-1)
     where (a,b,c,d) = weights m
 
 -- | The derivative of domFuncH.
-domFuncHDeriv :: (Floating a, Integral b) 
+domFuncHDeriv :: (Floating a, Integral b)
               => Model b -> b -> a -> a
 
 domFuncHDeriv m h z = (-4*(a'+d')*(z^^(a+d-1))*(z^^(b*h)-1))/(z^^b-1)
@@ -82,7 +83,7 @@ domFuncHDeriv m h z = (-4*(a'+d')*(z^^(a+d-1))*(z^^(b*h)-1))/(z^^b-1)
 
 -- | Newton-Raphson root finding algorithm.
 newton :: Floating a
-       => (a -> a)      -- ^ Function f whose root is to be found. 
+       => (a -> a)      -- ^ Function f whose root is to be found.
        -> (a -> a)      -- ^ The derivative f'.
        -> a             -- ^ Initial guess.
        -> [a]           -- ^ Infinite approximation sequence.
@@ -90,20 +91,20 @@ newton :: Floating a
 newton f f' z = z : newton f f' z'
     where z' = z - f z / f' z
 
--- | Successive root approximations of the plain 
+-- | Successive root approximations of the plain
 --   lambda terms dominating singularity.
-roots :: (Floating a, Integral b) 
-      => Model b        -- ^ Size notion. 
+roots :: (Floating a, Integral b)
+      => Model b        -- ^ Size notion.
       -> a              -- ^ Initial guess.
       -> [a]            -- ^ Infinite approximation sequence.
 
 roots m = newton (domFunc m) (domFuncDeriv m)
 
--- | Successive root approximations of the closed h-shallow 
+-- | Successive root approximations of the closed h-shallow
 --   lambda terms dominating singularity.
-rootsH :: (Floating a, Integral b) 
+rootsH :: (Floating a, Integral b)
        => Model b        -- ^ Size notion.
-       -> b              -- ^ Shallowness. 
+       -> b              -- ^ Shallowness.
        -> a              -- ^ Initial guess.
        -> [a]            -- ^ Infinite approximation sequence.
 
@@ -119,7 +120,7 @@ find _ _ = error "I wasn't expecting the Spanish Inquisition."
 
 -- | Finds the dominating singularity of the plain lambda term ordinary
 -- generating function.
-domSing :: (Floating a, Ord a, Integral b) 
+domSing :: (Floating a, Ord a, Integral b)
         => Model b       -- ^ Size notion.
         -> a             -- ^ Approximation error.
         -> a             -- ^ Dominating singularity.
@@ -128,7 +129,7 @@ domSing m eps = find (roots m 0.5) eps - eps
 
 -- | Finds the dominating singularity of the closed h-shallow lambda term
 -- ordinary generating function.
-domSingH :: (Floating a, Ord a, Integral b) 
+domSingH :: (Floating a, Ord a, Integral b)
          => Model b       -- ^ Size notion.
          -> b             -- ^ Shallowness.
          -> a             -- ^ Approximation error.
