@@ -38,7 +38,9 @@ plainNatSampler = P.rejectionSampler natural 1.0e-9
 
 In the above code snippet, we construct the sampler using the `natural` size notion
 where abstractions, applications, successors and zeros get weight one. Moreover,
-we request a singularity approximation with an error of `1.0e-09`.
+we request a singularity approximation with an error of `1.0e-09`. In consequence,
+the expected term size becomes a finite, though huge number (see [2] for more 
+details on calibrating the outcome size of Boltzmann samplers).
 
 Next we have to decide on the target size giving suitable bounds, as well as
 on the source of random numbers (see `Data.Lambda.Random`).
@@ -50,8 +52,10 @@ plainSampler :: IO Lambda
 plainSampler = plainLambdaIO plainNatSampler 500 50000
 ```
 
-And so, we have a monadic function `plainSampler` generating uniformly random
-plain lambda terms within the desired target size interval. 
+Finally, we obtained a monadic function `plainSampler` generating uniformly
+random plain lambda terms within the desired target size interval. See
+`filterPlain` and `filterPlainIO` for filter sampler which ensure additional
+properties of generated terms.
 
 #### Features
 1. Fast uniform random sampling of plain lambda terms.
