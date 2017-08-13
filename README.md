@@ -3,7 +3,55 @@ Lambda sampler
 
 *Lambda sampler* is a library for random generation of lambda terms in the de
 Bruijn notation (see [1,4,5]) utilising the powerful framework of Boltzmann
-samplers [2].
+samplers [2]. 
+
+ Lambda terms in the de Bruijn notation are lambda terms where instead of
+variables, we use natural indices encoded as a sequence of successors of zero.
+ Each index captures the distance to its binding lambda - `Z` (read zero)
+corresponds to a variable bound by the first lambda abstraction on its way to
+the term root. The successor `S` increases the distance of its argument by one.
+If an index points to a lambda abstraction outside of the term, then that index
+represents a free variable in the term. Such a representation for lambda terms
+avoids using explicit variable names and hence eliminates the use of
+alpha-conversion.
+
+Boltzmann samplers guarantee that terms of equal size have equal probability of
+being sampled. The price for the uniform outcome distribution is the
+non-deterministic size of the outcome size -- in the Boltzmann model it becomes
+a random variable.  Regardless, it is still possible to control the desired
+size lower and upper bounds using anticipated rejection, discarding unwanted
+terms until a suitable term is constructed. 
+
+*Lambda sampler* provides a simple interface for rejection-based 
+filters in both the setting of plain terms or closed ones (unbounded as well
+as with bounded, so-called shallow indices).
+
+#### Example usage
+We start with choosing an appropriate sampler variant, for instance a singular
+rejection sampler for plain terms (i.e. open or closed) calibrated using the
+so-called dominating singularity of the combinatorial system:
+
+```
+import qualified Data.Lambda.Random.PlainSystem as P
+plainNatSampler = P.rejectionSampler natural 1.0e-9
+```
+
+In the above code snippet, we construct the sampler using the `natural` size notion
+where abstractions, applications, successors and zeros get weight one. Moreover,
+we request a singularity approximation with an error of `1.0e-09`.
+
+Next we have to decide on the target size giving suitable bounds, as well as
+on the source of random numbers (see `Data.Lambda.Random`).
+For simplicity, let us choose the `IO` monad and the target 
+size of `[500; 50,000]`:
+
+```
+plainSampler :: IO Lambda
+plainSampler = plainLambdaIO plainNatSampler 500 50000
+```
+
+And so, we have a monadic function `plainSampler` generating uniformly random
+plain lambda terms within the desired target size interval. 
 
 #### Features
 1. Fast uniform random sampling of plain lambda terms.
