@@ -30,6 +30,11 @@ import Data.Lambda.Random.Oracle
 import qualified Data.Lambda.Random.System as S
 import qualified Data.Lambda.Random.PlainSystem as P
 
+-- | An expression defining the branching probabilities
+--   in the Boltzmann model for unbounded closed lambda terms using
+--   a mixture of a system for closed shallow terms and a closure
+--   system for plain terms used once the closed system has been
+--   exceeded in the sampling procedure.
 data MixedSystem a = MixedSystem { shallowSystem :: S.System a
                                  , plainSystem :: P.PlainSystem a
                                  }

@@ -37,6 +37,8 @@ data PlainSystem a = PlainSystem { abs :: a   -- ^ Abstraction probability.
                                  , zero :: a  -- ^ Zero constructor probability.
                                  } deriving (Show)
 
+-- | Evaluates the generating function for plain lambda terms
+--   assuming the given size model and parameter value.
 eval :: (Floating a, Integral b) => Model b -> a -> a
 eval m z = 1/(2*z^^d) * (1 - z^^c - sqrt ((4*z^^(a+d))/(z^^b - 1) + (1 -z^^c)^^2))
     where (a,b,c,d) = weights m
